@@ -11,7 +11,9 @@ export default function Dashboard() {
   };
 
   const fetchCart = async () => {
-    const res = await axios.get("http://localhost:5000/api/cart", { withCredentials: true });
+    const res = await axios.get("http://localhost:5000/api/cart", {
+      withCredentials: true,
+    });
     setCart(res.data?.items || []);
   };
 
@@ -21,14 +23,35 @@ export default function Dashboard() {
   }, []);
 
   const addToCart = async (id) => {
-    await axios.post(`http://localhost:5000/api/cart/add/${id}`, {}, { withCredentials: true });
+    await axios.post(
+      `http://localhost:5000/api/cart/add/${id}`,
+      {},
+      { withCredentials: true }
+    );
     fetchCart();
   };
 
-  // ↓ New function: decrease item quantity
   const decreaseQuantity = async (id) => {
-    await axios.post(`http://localhost:5000/api/cart/decrease/${id}`, {}, { withCredentials: true });
+    await axios.post(
+      `http://localhost:5000/api/cart/decrease/${id}`,
+      {},
+      { withCredentials: true }
+    );
     fetchCart();
+  };
+
+  const placeOrder = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/orders/place",
+        {},
+        { withCredentials: true }
+      );
+      alert("Order placed successfully!");
+      fetchCart();
+    } catch (err) {
+      alert("Error placing order");
+    }
   };
 
   return (
@@ -39,7 +62,10 @@ export default function Dashboard() {
       <h2 className="text-lg font-semibold mb-2">All Items</h2>
       <ul>
         {items.map((item) => (
-          <li key={item._id} className="border p-2 mb-2 flex justify-between items-center">
+          <li
+            key={item._id}
+            className="border p-2 mb-2 flex justify-between items-center"
+          >
             <div>
               <b>{item.title}</b> - ₹{item.price}
               <p>{item.description}</p>
@@ -59,29 +85,46 @@ export default function Dashboard() {
       {cart.length === 0 ? (
         <p>No items in cart</p>
       ) : (
-        <ul>
-          {cart.map((item) => (
-            <li key={item.itemId} className="border p-2 mb-2 flex justify-between items-center">
-              <div>
-                <b>{item.title}</b> - ₹{item.price} × {item.quantity}
-              </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => decreaseQuantity(item.itemId)}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded"
-                >
-                  −
-                </button>
-                <button
-                  onClick={() => addToCart(item.itemId)}
-                  className="bg-green-500 text-white px-3 py-1 rounded"
-                >
-                  +
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul>
+            {cart.map((item) => (
+              <li
+                key={item.itemId}
+                className="border p-2 mb-2 flex justify-between items-center"
+              >
+                <div>
+                  <b>{item.title}</b> - ₹{item.price} × {item.quantity}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => decreaseQuantity(item.itemId)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded"
+                  >
+                    −
+                  </button>
+                  <button
+                    onClick={() => addToCart(item.itemId)}
+                    className="bg-green-500 text-white px-3 py-1 rounded"
+                  >
+                    +
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            onClick={placeOrder}
+            className={`mt-4 px-4 py-2 rounded text-white ${
+              cart.length > 0
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
+            disabled={cart.length === 0}
+          >
+            Place Order
+          </button>
+        </>
       )}
     </div>
   );
