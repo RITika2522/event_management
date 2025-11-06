@@ -7,20 +7,19 @@ const cookieParser = require("cookie-parser");
 dotenv.config();
 const app = express();
 
-// ✅ Middlewares
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: "http://localhost:5173", // your frontend
-  credentials: true                // allows cookies
+app.use(cors({origin: "http://localhost:5173", 
+  credentials: true                
 }));
 
-// ✅ MongoDB connection
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
-// ✅ Routes
+
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
 
