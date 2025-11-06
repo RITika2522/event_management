@@ -55,77 +55,85 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">User Dashboard</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 text-white p-8">
+      <h1 className="text-4xl font-extrabold mb-8 text-center">🛍️ User Dashboard</h1>
 
-      {/* --- All Items --- */}
-      <h2 className="text-lg font-semibold mb-2">All Items</h2>
-      <ul>
+      {/* --- All Items Section --- */}
+      <h2 className="text-2xl font-semibold mb-4 text-center">Available Items</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item) => (
-          <li
+          <div
             key={item._id}
-            className="border p-2 mb-2 flex justify-between items-center"
+            className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300"
           >
-            <div>
-              <b>{item.title}</b> - ₹{item.price}
-              <p>{item.description}</p>
-            </div>
+            <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+            <p className="text-white/80 mb-3">{item.description}</p>
+            <p className="text-lg font-semibold mb-4">₹{item.price}</p>
             <button
               onClick={() => addToCart(item._id)}
-              className="bg-green-500 text-white px-3 py-1 rounded"
+              className="w-full py-2 bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold rounded-lg shadow-md hover:opacity-90 transition-all duration-200"
             >
               Add to Cart
             </button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
 
       {/* --- Cart Section --- */}
-      <h2 className="text-lg font-semibold mt-8 mb-2">Your Cart</h2>
-      {cart.length === 0 ? (
-        <p>No items in cart</p>
-      ) : (
-        <>
-          <ul>
-            {cart.map((item) => (
-              <li
-                key={item.itemId}
-                className="border p-2 mb-2 flex justify-between items-center"
-              >
-                <div>
-                  <b>{item.title}</b> - ₹{item.price} × {item.quantity}
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => decreaseQuantity(item.itemId)}
-                    className="bg-yellow-500 text-white px-3 py-1 rounded"
-                  >
-                    −
-                  </button>
-                  <button
-                    onClick={() => addToCart(item.itemId)}
-                    className="bg-green-500 text-white px-3 py-1 rounded"
-                  >
-                    +
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+      <div className="mt-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-2xl">
+        <h2 className="text-2xl font-semibold mb-4 text-center">🛒 Your Cart</h2>
 
-          <button
-            onClick={placeOrder}
-            className={`mt-4 px-4 py-2 rounded text-white ${
-              cart.length > 0
-                ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
-            disabled={cart.length === 0}
-          >
-            Place Order
-          </button>
-        </>
-      )}
+        {cart.length === 0 ? (
+          <p className="text-center text-white/80">Your cart is empty</p>
+        ) : (
+          <>
+            <div className="space-y-4">
+              {cart.map((item) => (
+                <div
+                  key={item.itemId}
+                  className="flex justify-between items-center bg-white/10 p-4 rounded-lg border border-white/20 hover:bg-white/20 transition-all"
+                >
+                  <div>
+                    <p className="font-semibold text-lg">{item.title}</p>
+                    <p className="text-white/80 text-sm">
+                      ₹{item.price} × {item.quantity}
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => decreaseQuantity(item.itemId)}
+                      className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+                    >
+                      −
+                    </button>
+                    <button
+                      onClick={() => addToCart(item.itemId)}
+                      className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center mt-6">
+              <button
+                onClick={placeOrder}
+                disabled={cart.length === 0}
+                className={`px-6 py-2 rounded-lg font-semibold shadow-lg transition-all ${
+                  cart.length > 0
+                    ? "bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white"
+                    : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                }`}
+              >
+                Place Order
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
